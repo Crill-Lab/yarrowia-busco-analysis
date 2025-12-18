@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y. lipolytica BUSCO Analysis Results</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8fafc;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+        .stat-number { font-size: 2rem; font-weight: bold; margin-bottom: 5px; }
+        .blue { color: #2563eb; }
+        .green { color: #16a34a; }
+        .findings {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Y. lipolytica BUSCO Analysis Results</h1>
+            <p>67 strains • Saccharomycetes_odb10 database • 2,137 total BUSCOs</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number blue">67</div>
+                <div>Total Strains</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number green">91.0%</div>
+                <div>Average Completion</div>
+            </div>
+        </div>
+        
+        <div class="findings">
+            <h3>DARPA TOGLE Project - Crill Lab Analysis</h3>
+            <p>Systematic genome quality assessment demonstrating excellent assembly quality across Y. lipolytica strain collection.</p>
+        </div>
+    </div>
+</body>
+</html>
