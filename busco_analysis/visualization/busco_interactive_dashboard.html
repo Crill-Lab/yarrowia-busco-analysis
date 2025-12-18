@@ -30,6 +30,23 @@
             color: #111827;
             margin-bottom: 10px;
         }
+        .header p {
+            font-size: 1.1rem;
+            color: #6b7280;
+        }
+        .chart-container {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #374151;
+        }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -43,14 +60,50 @@
             text-align: center;
             border: 1px solid #e5e7eb;
         }
-        .stat-number { font-size: 2rem; font-weight: bold; margin-bottom: 5px; }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
         .blue { color: #2563eb; }
         .green { color: #16a34a; }
+        .purple { color: #7c3aed; }
+        .orange { color: #ea580c; }
+        .red { color: #dc2626; }
         .findings {
             background: #f9fafb;
             padding: 20px;
             border-radius: 8px;
             border: 1px solid #e5e7eb;
+        }
+        .findings h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #374151;
+        }
+        .findings ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .findings li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .findings li:before {
+            content: "•";
+            color: #2563eb;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        #buscoChart {
+            height: 500px !important;
         }
     </style>
 </head>
@@ -60,22 +113,168 @@
             <h1>Y. lipolytica BUSCO Analysis Results</h1>
             <p>67 strains • Saccharomycetes_odb10 database • 2,137 total BUSCOs</p>
         </div>
-        
+
+        <div class="chart-container">
+            <h2 class="chart-title">BUSCO Categories Distribution</h2>
+            <canvas id="buscoChart"></canvas>
+        </div>
+
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number blue">67</div>
-                <div>Total Strains</div>
+                <div class="stat-label">Total Strains</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number green">91.0%</div>
-                <div>Average Completion</div>
+                <div class="stat-label">Average Completion</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number purple">91.6%</div>
+                <div class="stat-label">Highest Completion</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number orange">3</div>
+                <div class="stat-label">Outliers (&lt;90%)</div>
             </div>
         </div>
-        
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number blue">1943</div>
+                <div class="stat-label">Avg Single-copy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number green">6</div>
+                <div class="stat-label">Avg Duplicated</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number orange">20</div>
+                <div class="stat-label">Avg Fragmented</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number red">168</div>
+                <div class="stat-label">Avg Missing</div>
+            </div>
+        </div>
+
         <div class="findings">
-            <h3>DARPA TOGLE Project - Crill Lab Analysis</h3>
-            <p>Systematic genome quality assessment demonstrating excellent assembly quality across Y. lipolytica strain collection.</p>
+            <h3>Key Findings</h3>
+            <ul>
+                <li><strong>Excellent overall quality:</strong> 91.0% average completion across 67 strains</li>
+                <li><strong>Tight clustering:</strong> Range from 84.7% to 91.6% supports high genomic similarity</li>
+                <li><strong>Low duplication:</strong> Average of 6 duplicated BUSCOs indicates good assembly quality</li>
+                <li><strong>Consistent gene complement:</strong> Nearly identical BUSCO profiles across all strains</li>
+                <li><strong>Notable outliers:</strong> NRRL Y-48651 (84.7%), H222 (88.7%), IBT 446 (89.0%) warrant further investigation</li>
+            </ul>
+            <p><strong>DARPA TOGLE Project - Syracuse University Crill Lab</strong></p>
         </div>
     </div>
+
+    <script>
+        // Y. lipolytica BUSCO data - all 67 strains
+        const strainNames = [
+            "190572149", "22301-5", "A101", "ATCC 16617", "ATCC 18942", "ATCC 201089", 
+            "ATCC 20114", "ATCC 20177", "ATCC 201847", "ATCC 20255", "ATCC 20324", 
+            "ATCC 20341", "ATCC 20346", "ATCC 20362", "ATCC 20390", "ATCC 20460", 
+            "ATCC 20496", "ATCC 32341", "ATCC 32342", "ATCC 32343", "ATCC 34922", 
+            "ATCC 42281", "ATCC 46069", "ATCC 46330", "ATCC 46482", "ATCC 46483", 
+            "ATCC 48436", "ATCC 62385", "ATCC 76598", "ATCC 8661", "ATCC 8662", 
+            "ATCC 90812", "ATCC 90905", "ATCC 9773", "ATCC MYA-165", "ATCC MYA-2613", 
+            "CA20", "CBA6003", "CGMCC7326", "CLIB122", "DSM 3286", "FKP355", 
+            "H222", "IBT 446", "M6804A", "NCIM 3589", "NRRL Y-11854", "NRRL Y-383", 
+            "NRRL Y-4137", "NRRL Y-48157", "NRRL Y-48651", "NRRL Y-48652", 
+            "NRRL Y-48653", "NRRL Y-5383", "NRRL Y-64008", "NRRL Y-7149", 
+            "NRRL Y-7754", "NRRL YB-423", "NRRL YB-437", "NRRL YB-618", 
+            "pex17-1", "PT3309", "WSH-Z06", "XZ-2019", "YB392", "YB419", "YB420", 
+            "YB566", "YB567", "YlCW001"
+        ];
+
+        const singleCopyData = [
+            1945, 1944, 1947, 1948, 1944, 1950, 1947, 1947, 1949, 1949, 1949, 1945, 1948, 1945, 
+            1947, 1947, 1951, 1945, 1948, 1946, 1950, 1947, 1947, 1945, 1950, 1946, 1948, 1949, 
+            1944, 1944, 1945, 1942, 1949, 1950, 1950, 1944, 1948, 1947, 1947, 1941, 1946, 1914, 
+            1891, 1895, 1946, 1946, 1949, 1944, 1946, 1950, 1803, 1944, 1947, 1949, 1944, 1947, 
+            1945, 1944, 1943, 1947, 1939, 1947, 1941, 1943, 1944, 1947, 1949, 1946, 1945, 1942
+        ];
+
+        const duplicatedData = [
+            4, 7, 10, 6, 10, 6, 5, 6, 7, 7, 6, 6, 6, 8, 8, 5, 5, 9, 6, 7, 6, 7, 7, 6, 5, 6, 5, 5, 
+            8, 5, 5, 7, 7, 5, 5, 5, 6, 5, 6, 6, 7, 5, 5, 6, 5, 7, 6, 10, 6, 5, 8, 7, 6, 5, 5, 6, 6, 
+            7, 9, 5, 12, 6, 5, 9, 6, 6, 6, 8, 7, 5
+        ];
+
+        const fragmentedData = [
+            23, 21, 19, 21, 20, 19, 20, 20, 20, 20, 19, 20, 19, 20, 19, 20, 20, 20, 20, 20, 19, 19, 
+            20, 21, 20, 20, 20, 21, 22, 20, 20, 20, 19, 19, 19, 21, 19, 20, 20, 21, 19, 24, 27, 29, 
+            21, 21, 20, 20, 20, 21, 20, 21, 20, 20, 21, 20, 19, 23, 20, 20, 21, 20, 21, 20, 23, 22, 
+            20, 20, 21, 23
+        ];
+
+        const missingData = [
+            165, 165, 161, 162, 163, 162, 165, 164, 161, 161, 163, 166, 164, 164, 163, 165, 161, 163, 
+            163, 164, 162, 164, 163, 165, 162, 165, 164, 162, 163, 168, 167, 168, 162, 163, 163, 167, 
+            164, 165, 164, 169, 165, 194, 214, 207, 165, 163, 162, 163, 165, 161, 306, 165, 164, 163, 
+            167, 164, 167, 163, 165, 165, 165, 164, 170, 165, 164, 162, 162, 163, 164, 167
+        ];
+
+        // Create the interactive chart
+        const ctx = document.getElementById('buscoChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: strainNames,
+                datasets: [{
+                    label: 'Single-copy',
+                    data: singleCopyData,
+                    backgroundColor: '#2563eb',
+                    stack: 'Stack 0'
+                }, {
+                    label: 'Duplicated',
+                    data: duplicatedData,
+                    backgroundColor: '#16a34a',
+                    stack: 'Stack 0'
+                }, {
+                    label: 'Fragmented',
+                    data: fragmentedData,
+                    backgroundColor: '#ea580c',
+                    stack: 'Stack 0'
+                }, {
+                    label: 'Missing',
+                    data: missingData,
+                    backgroundColor: '#dc2626',
+                    stack: 'Stack 0'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
